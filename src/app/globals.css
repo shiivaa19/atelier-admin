@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0E0E10;
+  --foreground: #F5F1E8;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Inter, sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbars for quiet luxury feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0E0E10;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A2A2E;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C9A961;
+}
+
+/* Custom focus ring styling for gold luxury aesthetic */
+:focus-visible {
+  outline: 2px solid #C9A961;
+  outline-offset: 2px;
+}
+
+/* Skeleton shimmer gradient effect */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #16161A 0%,
+    #232329 50%,
+    #16161A 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite linear;
+}
