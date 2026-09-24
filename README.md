@@ -6,52 +6,48 @@ A clean, modern Product Admin Dashboard built with **Next.js (App Router)**, **R
 
 ---
 
-## 📁 Simple Project Folder Structure
+## 📁 Project Folder Structure
 
 ```
 src/
-├── app/                  # 1. Page Routes
+├── app/                  # Page Routes
 │   ├── (auth)/login/     # Login Page
-│   └── (dashboard)/      # Protected Dashboard
+│   └── (dashboard)/      # Protected Dashboard Routes
 │       └── products/     # Product List & [id] Detail Page
-├── components/           # 2. UI Components
+├── components/           # UI Components
 │   ├── ui/               # Low-level primitives (Button, Input, Modal, Toast)
 │   ├── layout/           # Layout structure (Sidebar, Topbar, MobileDrawer)
 │   └── products/         # Product components (ProductTable, ProductCard, Filters, Pagination, ProductForm)
-├── context/              # 3. State Management
+├── context/              # State Management
 │   ├── AuthContext.tsx   # Login token & user session
 │   ├── LocalProductsContext.tsx # Local overlay for Add/Edit/Delete
 │   └── ToastContext.tsx  # Toast notifications
-├── hooks/                # 4. Custom Logic Hooks
+├── hooks/                # Custom Logic Hooks
 │   ├── useProducts.ts    # Fetching + AbortController cancellation
 │   ├── useProductParams.ts # URL query string parsing & sanitizing
 │   └── useDebounce.ts   # Hand-written 400ms search debouncer
-├── services/             # 5. API Layer (Axios)
+├── services/             # API Layer (Axios)
 │   ├── auth.service.ts
 │   ├── products.service.ts
 │   └── categories.service.ts
-└── lib/                  # 6. Utilities & Config
+└── lib/                  # Utilities & Config
     ├── axios.ts          # Central Axios instance + Interceptors
     └── validators.ts     # Hand-written form validation
 ```
 
 ---
 
-## 💡 How to Explain This Project in 2 Minutes (Interview Cheat Sheet)
+## 🛠️ Tech Stack & Constraints
 
-When explaining this project to an interviewer, break it down into **4 simple layers**:
-
-### 1. Central API Layer (`src/lib/axios.ts` & `src/services/`)
-> *"I created ONE centralized Axios instance in `axios.ts`. An interceptor automatically attaches the Bearer token to every request and auto-logouts the user on 401 errors. All API endpoints are isolated in service files (`products.service.ts`), so UI components never touch Axios directly."*
-
-### 2. URL as Single Source of Truth (`src/hooks/useProductParams.ts`)
-> *"Page number, page limit, search query, category, and sorting are kept in the URL query parameters. I wrote `useProductParams` to parse and sanitize bad URL inputs (like `?page=abc` or `?page=999`) into safe fallbacks without crashing."*
-
-### 3. Race Condition & Search Protection (`src/hooks/useProducts.ts`)
-> *"To handle fast typing in search, I used two layers in `useProducts.ts`: a hand-written `useDebounce` hook (400ms delay), plus `AbortController` cancellation so superseded API requests are cancelled before old data can overwrite newer search results."*
-
-### 4. Client Local Overlay (`src/context/LocalProductsContext.tsx`)
-> *"Since DummyJSON mock API endpoints do not persist `POST`, `PUT`, or `DELETE` requests on their backend, I built `LocalProductsContext`. It saves added, edited, and deleted items in `localStorage` and merges them on top of the API data seamlessly."*
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **HTTP Client**: Axios (Single instance with bearer token interceptor)
+- **Icons**: `lucide-react`
+- **Strict Constraints**:
+  - Hand-crafted data fetching via custom `useProducts` hook (No React Query / SWR).
+  - Standard HTML `<table>` for desktop (No TanStack Table).
+  - All pagination, sorting, filtering, and modal logic written by hand.
 
 ---
 
@@ -70,6 +66,19 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ### Demo Credentials
 - **Username**: `emilys`
 - **Password**: `emilyspass`
+
+---
+
+## 📌 Architectural Decisions
+
+### 1. Search vs. Category Mutual Exclusion
+- **Behavior**: Typing a search query clears the category filter. Selecting a category clears the search query.
+- **Inline UI Warning**: Displays an alert: *"Category filter is disabled while searching to preserve true server-side pagination."*
+- **Reason**: The DummyJSON API does not support combining `q` and `category` parameters simultaneously (`/products/search?q=` vs `/products/category/{slug}`). Fetching all products client-side to combine them would break true server-side pagination, waste bandwidth, and give wrong total counts.
+
+### 2. Local Overlay Strategy for Add/Edit/Delete
+- **Behavior**: Added products, edited fields, and deleted IDs are stored in `LocalProductsContext` + `localStorage` and merged on top of API data.
+- **Reason**: The DummyJSON API does not persist `POST`, `PUT`, or `DELETE` changes on its servers. The local overlay provides real persistence across page reloads and navigations.
 
 ---
 
