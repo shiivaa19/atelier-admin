@@ -71,12 +71,6 @@ function LoginFormContent() {
     }
   };
 
-  const fillDemoCredentials = () => {
-    setUsername("emilys");
-    setPassword("emilyspass");
-    setErrors({});
-  };
-
   if (authLoading) {
     return (
       <div className="min-h-screen bg-luxury-bg flex items-center justify-center">
@@ -130,26 +124,6 @@ function LoginFormContent() {
             </p>
           </div>
 
-          {/* Demo Hint Banner */}
-          <div className="p-4 rounded-xl bg-luxury-surface border border-luxury-border flex items-center justify-between gap-3 shadow-sm">
-            <div className="text-xs space-y-0.5">
-              <span className="text-luxury-gold font-semibold uppercase tracking-wider block text-[10px]">
-                DEMO CREDENTIALS
-              </span>
-              <p className="text-luxury-text font-mono text-xs">
-                User: <span className="text-luxury-gold font-bold">emilys</span> | Pass:{" "}
-                <span className="text-luxury-gold font-bold">emilyspass</span>
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={fillDemoCredentials}
-              className="text-xs text-luxury-gold underline hover:text-luxury-goldHover font-medium shrink-0 transition-colors"
-            >
-              Auto-fill
-            </button>
-          </div>
-
           {/* General API Error Alert */}
           {errors.general && (
             <div className="p-3.5 rounded-lg bg-red-950/60 border border-red-800/60 flex items-center gap-3 text-red-200 text-xs animate-fadeIn">
@@ -163,7 +137,7 @@ function LoginFormContent() {
             <Input
               label="Username"
               type="text"
-              placeholder="e.g. emilys"
+              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               error={errors.username}
